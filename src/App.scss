@@ -1,0 +1,32 @@
+.main-container {
+  border: 1px solid black;
+  margin: 0 auto;
+  max-width: 900px;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+}
+
+.input-container {
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid grey;
+  width: 45%;
+  margin: 0 auto;
+}
+
+.input-button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-container {
+  width: 100%;
+}
+
+$redColor: red;
+
+.enter-button {
+  background-color: $redColor;
+}
