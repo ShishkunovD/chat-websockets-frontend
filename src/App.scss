@@ -1,3 +1,6 @@
+$blueColor: rgb(4, 0, 255);
+$whiteColor: #FFFFFF;
+
 .main-container {
   border: 1px solid black;
   margin: 0 auto;
@@ -9,24 +12,47 @@
 
 .input-container {
   display: flex;
-  justify-content: space-between;
   border: 1px solid grey;
-  width: 45%;
+  width: 60%;
   margin: 0 auto;
 }
 
 .input-button {
   width: 100%;
+  height: 100px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.input {
+  width: 250px;
+  height: 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.25rem;
 }
 
 .chat-container {
   width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-$redColor: red;
-
-.enter-button {
-  background-color: $redColor;
+.button {
+  background-color: $blueColor;
+  border-color: $blueColor;
+  color: $whiteColor;
+  cursor: pointer;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
 }
