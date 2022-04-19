@@ -47,6 +47,25 @@ $whiteColor: #FFFFFF;
   justify-content: space-between;
 }
 
+.arrow-down {
+  position: fixed;
+  top: 35%;
+  left: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: $blueColor;
+  width: 20px;
+  height: 20px;
+  z-index: 50;
+  cursor: pointer;
+}
+
+.arrow-down-hidden {
+  display: none;
+}
+
 .button {
   background-color: $blueColor;
   border-color: $blueColor;

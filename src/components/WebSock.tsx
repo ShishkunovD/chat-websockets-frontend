@@ -9,6 +9,12 @@ const WebSock = () => {
   const [messages, setMessage] = useState<any>([]);
   const [value, setValue] = useState<string>('');
   const [connected, setConnected] = useState<boolean>(false);
+
+  // state for show arrow, when user hasn't read new messages
+  const [showArrow, setShowArrow] = useState<boolean>(false);
+
+  // counter for unreading messages
+  const [countMessage, setCountMessage] = useState<number>(0);
   
   const [username, setUserName] = useState<string>('');
 
@@ -16,10 +22,24 @@ const WebSock = () => {
   const inputMessage = useRef<any>();
   const chatMessgae = useRef<any>();
 
+  // Здесь исправляем баг, стрелка должна пропадать, если мы сами долистали к низу
+
+  // useEffect(() => {
+  //   chatMessgae.addEventListener('scroll', scrollHandler);
+
+  //   return () => {
+  //     chatMessgae.addEventListener('scroll', scrollHandler)
+  //   } 
+  // }, [])
+
   const { isPlaying, play, pause, toggle } = useAudio({
     src: song,
     loop: false,
   });
+
+  const scrollHandler = () => {
+
+  }
 
   const connect = () => {
     socket.current = new WebSocket('ws://localhost:5000')
@@ -57,6 +77,9 @@ const WebSock = () => {
     }
     if(value.length) {
       socket.current.send(JSON.stringify(message));
+      if(chatMessgae.current.offsetWidth - chatMessgae.current.clientWidth > 5) {
+        setShowArrow(true);
+      }
       setValue('');
       inputMessage.current.focus();
     } else {
@@ -75,9 +98,10 @@ const WebSock = () => {
       }
       if(value.length) {
         socket.current.send(JSON.stringify(message));
-        // chatMessgae.current.scrollTop = chatMessgae.current.scrollHeight - chatMessgae.current.clientHeight;
-        console.log(chatMessgae.current.scrollHeight);
-        console.log(chatMessgae.current.clientHeight);
+        if(chatMessgae.current.offsetWidth - chatMessgae.current.clientWidth > 5) {
+          setCountMessage((prev) => prev + 1)
+          setShowArrow(true);
+        }
         setValue('');
         inputMessage.current.focus();
       } else {
@@ -87,13 +111,23 @@ const WebSock = () => {
     }
   }
 
-  useEffect(() => {
-    
-  }, [messages])
+  const getTextInput = (e: any) => {
+    setValue(e.target.value);
+  }
 
-  // useEffect(() => {
-  //   messages[messages.length - 1].scrollIntoView({block: "center", behavior: "smooth"});
-  // }, [messages]);
+  const check = (e: any) => {
+    // console.log(e.target.selectionStart) // для Смайлов
+  }
+
+  const downScroll = () => {
+    chatMessgae.current.scrollTop = chatMessgae.current.scrollHeight - chatMessgae.current.clientHeight;
+    if(chatMessgae.current.scrollHeight - (chatMessgae.current.clientHeight + chatMessgae.current.scrollTop) < 1) {
+      setShowArrow(false);
+      setCountMessage(0);
+    }
+  }
+
+  // console.log(countMessage); Для счетчика непрочитанных сообщений
 
   if(!connected) {
       return(
@@ -109,22 +143,26 @@ const WebSock = () => {
         </div>
       )
   }
-
-  const getTextInput = (e: any) => {
-    setValue(e.target.value);
-  }
-
-  const check = (e: any) => {
-    console.log(e.target.selectionStart)
-    toggle();
-  }
   
   return(
     <div className="chat-container">
         <div 
           className="chat-messages"
           ref={chatMessgae}>
-          {messages.map((mess: any) => <OneMessage key={mess.id} mess={mess} username={username}/>)}
+          <div className={showArrow ?
+            "arrow-down" :
+            "arrow-down-hidden"}
+            onClick={() => downScroll()}
+          >
+            &darr;
+          </div>
+          {messages.map((mess: any) => <OneMessage
+            key={mess.id}
+            mess={mess}
+            username={username}
+            toggle={toggle}
+            messages={messages}
+          />)}
         </div>
         <div className="input-container">
           <div className="input-button">
@@ -137,7 +175,6 @@ const WebSock = () => {
               onClick={(e) => check(e)}
             />
             <button className="button" onClick={sendMessage}>Отправить</button>
-            <button onClick={toggle}>{isPlaying ? "Pause" : "Play"}</button>
           </div>
         </div>
     </div>

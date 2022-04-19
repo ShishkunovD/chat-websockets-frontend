@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect } from 'react';
+import { SetStateAction, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import getUserName from '../Redux/toolkitSlice';
 import '../style/OneMessage.scss';
@@ -10,16 +10,26 @@ type TOneMessgae = {
       event: string,
       message: string
     }
-    username: string
+    username: string;
+    toggle: () => void;
+    messages: any; // Тех долг. Изменить тип!!!
 }
 
-const OneMessage = ({ mess, username }: TOneMessgae) => {
+const OneMessage = ({ mess, username, toggle, messages }: TOneMessgae) => {
 
-  const dispatch = useDispatch<any>();
+  // const dispatch = useDispatch<any>();
 
-  // useEffect(() => {
-  //   dispatch(getUserName(username)); // Вот здесь проблема, надо решать!!!
-  // }, [])
+  // вот здесь попробовать uselayouteffect чтобы функционал не работал дальше, пока мелодия не закончит играть!!!
+
+  useLayoutEffect(() => {
+    if(username !== messages[messages.length - 1].username) {
+      // console.log(messages[messages.length - 1].username);
+      // console.log(username)
+      toggle();
+    } else {
+      return
+    }
+  }, [messages])
 
   return(
     <div key={mess.id}>
